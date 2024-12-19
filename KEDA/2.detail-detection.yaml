@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: darknet-detail-detection-model
+  namespace: detail-detection
+  labels:
+    app: darknet
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: darknet
+  template:
+    metadata:
+      annotations:
+        config.linkerd.io/proxy-cpu-limit: "1"
+        config.linkerd.io/proxy-cpu-request: "0.1"
+        config.linkerd.io/proxy-memory-limit: 1Gi
+        config.linkerd.io/proxy-memory-request: 128Mi
+      labels:
+        app: darknet
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        worker: hpc
+      containers:
+      - name: darknet-detail-detection
+        image: ryunchang/darknet:9.0-captioning      #####image
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8022
+        volumeMounts:
+        - mountPath: /app/img    #container
+          name: cap-vol
+      volumes:
+      - name: cap-vol
+        hostPath:
+          type: Directory
+          path: /home/faasoong/mntdir    #GPU server
+
+
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: darknet-detail-detection-scaling
+  namespace: detail-detection
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1   # Optional. Default: apps/v1
+    kind: Deployment         # Optional. Default: Deployment
+    name: darknet-detail-detection-model      # Mandatory. Must be in the same namespace as the ScaledObject
+    envSourceContainerName: darknet-detail-detection # Optional. Default: .spec.template.spec.containers[0]
+  pollingInterval: 1                                # Optional. Default: 30 seconds
+  cooldownPeriod: 10                               # Optional. Default: 300 seconds 아예 다시 zero상태로 돌아가는데 까지 걸리는 시간
+  minReplicaCount: 0                                 # Optional. Default: 0
+  maxReplicaCount: 1                               # Optional. Default: 100
+  triggers:
+  - type: rabbitmq
+    metadata:
+      host: amqp://faasoong:tnd@faasoong.iptime.org:5672/
+      protocol: amqp 
+      mode: QueueLength 
+      value: "500" 
+      queueName: motion
+      vhostName: /
+
