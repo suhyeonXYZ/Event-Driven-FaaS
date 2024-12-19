@@ -43,7 +43,7 @@ KOREN은 전국 10개 지역노드(서울, 판교, 수원, 대전, 광주, 대�
 -   이벤트 기반의 함수형 서비스 제공.
 
 ## Overall Architecture
-
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/78cee730-95d3-4562-ad1f-887e849031b5/b9a2b58f-c672-4d7f-babf-28d85146db53/image.png)
 
 ## Scenario
 
