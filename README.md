@@ -17,9 +17,9 @@ KEDA(Kubernetes-Event-Driven-AutoScaling)을 활용한 Scale-to-Zero 구현.
 
 **숭실대학교 전자정보공학부**
 
--   [김도현](https://github.com/dohyunKim12)(Dohyun Kim)
--   [윤창섭](https://github.com/ryunchang)(Changseop Yoon)
--   [송수현](https://github.com/suhyunS123)(Suhyun Song)
+-   김도현(Dohyun Kim)
+-   윤창섭(Changseop Yoon)
+-   송수현(Suhyun Song)
 -   송지원(Jiwon Song)
 
 ## About KOREN
